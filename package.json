@@ -1,0 +1,23 @@
+{
+  "name": "watch-make",
+  "version": "1.0.0",
+  "description": "Watch makefile dependencies and run targets",
+  "bin": {
+    "wmake": "wmake.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quarterto/watch-make.git"
+  },
+  "keywords": [
+    "watch",
+    "make",
+    "build"
+  ],
+  "author": "Matt Brennan <matt@153.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quarterto/watch-make/issues"
+  },
+  "homepage": "https://github.com/quarterto/watch-make#readme"
+}
