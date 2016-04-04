@@ -2,8 +2,14 @@
 
 set -e
 
-command -v fswatch >/dev/null 2>&1 || {
-	echo "fswatch not found"
+fswatch --version | grep Enrico || {
+	cat <<EOF
+fswatch not found or incompatible version
+
+fswatch >1.3 by Enrico Crisostomo is required.
+It is available at http://emcrisostomo.github.io/fswatch/
+or in Homebrew: `brew install fswatch`
+EOF
 	exit 1
 }
 
