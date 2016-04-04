@@ -2,7 +2,7 @@
 
 set -e
 
-which -s fswatch || {
+command -v fswatch >/dev/null 2>&1 || {
 	echo "fswatch not found"
 	exit 1
 }
