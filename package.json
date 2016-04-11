@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/quarterto/watch-make/issues"
   },
-  "homepage": "https://github.com/quarterto/watch-make#readme"
+  "homepage": "https://github.com/quarterto/watch-make#readme",
+  "dependencies": {
+    "@quarterto/hr-cli": "^1.0.0",
+    "chalk-cli": "^2.0.0"
+  }
 }
