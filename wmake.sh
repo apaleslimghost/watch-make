@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+shopt -s nocasematch
 
 if [[ $0 == $(npm bin) ]]; then
 	readonly NPM_BIN="$(npm root)/watch-make/node_modules/.bin"
@@ -38,17 +39,39 @@ export FORCE_COLOR=1
 chalk="$NPM_BIN/chalk"
 hr="$NPM_BIN/hr"
 
-_wmake() {
-	echo "[$(echo make | $chalk blue)] $(echo running | $chalk gray) make $@"
-	$hr -w $(tput cols) | $chalk gray
-	make $@
+loaddeps() {
+	echo "[$(echo make | $chalk blue)]  loading dependencies"
 	deps=$(make -nBd $@ | grep 'No need' | cut -d '`' -f 2 | cut -d "'" -f 1)
 	filecount=$(echo $deps | tr " " "\n" | wc -l)
-	echo "[$(echo watch | $chalk green)]" watching $filecount "file"$([ $filecount == '1' ] || echo 's')
+	echo "[$(echo make | $chalk blue)]  loaded" $filecount "dependenc$([ $filecount == '1' ] && 'y' || echo 'ies')"
+}
 
+runmake() {
+	echo "[$(echo make | $chalk blue)]  $(echo running | $chalk gray) make $@"
+	$hr -w $(tput cols) | $chalk gray
+	make $@
+}
+
+fswait() {
+	echo "[$(echo watch | $chalk green)]" watching $filecount "file"$([ $filecount == '1' ] || echo 's')
 	changed=$(fswatch -1 $deps)
 	echo "[$(echo watch | $chalk green)] $(echo $changed | $chalk gray) changed"
 	$hr -w $(tput cols) | $chalk gray
+	if [[ "$changed"  == *makefile ]]; then
+		return 0 # signals to the loop to just reload dependencies
+	else
+		return 1 # signals to the loop to remake
+	fi
+}
+
+_wmake() {
+	loaddeps $@
+	runmake $@
+
+	while fswait; do
+		loaddeps $@
+	done
+
 	_wmake $@
 }
 
