@@ -1,13 +1,13 @@
 {
   "name": "watch-make",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Watch makefile dependencies and run targets",
   "bin": {
     "wmake": "wmake.sh"
   },
   "scripts": {
     "bundle": "bundle-dependencies update",
-    "prepublish": "rm -rf node_modules ; npm install --production $(bundle-dependencies list-bundled-dependencies); npm dedupe; npm prune",
+    "prepublish": "rm -rf node_modules; npm install --production $(node -p 'require(\"./package.json\").bundledDependencies.join(\" \")'); npm dedupe; npm prune",
     "postpublish": "npm install"
   },
   "repository": {
