@@ -5,6 +5,11 @@
   "bin": {
     "wmake": "wmake.sh"
   },
+  "scripts": {
+    "bundle": "bundle-dependencies update",
+    "prepublish": "rm -rf node_modules ; npm install --production $(bundle-dependencies list-bundled-dependencies); npm dedupe; npm prune",
+    "postpublish": "npm install"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/quarterto/watch-make.git"
@@ -23,5 +28,12 @@
   "dependencies": {
     "@quarterto/hr-cli": "^1.0.0",
     "chalk-cli": "^2.0.0"
-  }
+  },
+  "devDependencies": {
+    "bundle-dependencies": "^1.0.2"
+  },
+  "bundledDependencies": [
+    "@quarterto/hr-cli",
+    "chalk-cli"
+  ]
 }
