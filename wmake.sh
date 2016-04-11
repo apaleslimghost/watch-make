@@ -41,6 +41,7 @@ hr="$NPM_BIN/hr"
 
 loaddeps() {
 	echo "[$(echo make | $chalk blue)]  loading dependencies"
+	olddeps=$deps
 	deps=$(make -nBd $@ | grep 'No need' | cut -d '`' -f 2 | cut -d "'" -f 1)
 	filecount=$(echo $deps | tr " " "\n" | wc -l)
 	echo "[$(echo make | $chalk blue)]  loaded" $filecount "dependenc$([ $filecount == '1' ] && 'y' || echo 'ies')"
@@ -58,18 +59,30 @@ fswait() {
 	echo "[$(echo watch | $chalk green)] $(echo $changed | $chalk gray) changed"
 	$hr -w $(tput cols) | $chalk gray
 	if [[ "$changed"  == *makefile ]]; then
-		return 0 # signals to the loop to just reload dependencies
+		loaddeps $@
+
+	 	if [ "$olddeps" != "$deps" ]; then
+			return 0
+		else
+			noloaddeps='1'
+			echo "[$(echo watch | $chalk green)] no change to dependencies, remaking"
+			return 1 # signals to the loop to remake
+		fi
 	else
-		return 1 # signals to the loop to remake
+		return 1
 	fi
 }
 
 _wmake() {
-	loaddeps $@
+	if [ "$noloaddeps" == '1' ]; then
+		noloaddeps='0'
+	else
+		loaddeps $@
+	fi
 	runmake $@
 
-	while fswait; do
-		loaddeps $@
+	while fswait $@; do
+		:
 	done
 
 	_wmake $@
