@@ -50,7 +50,10 @@ loaddeps() {
 runmake() {
 	echo "[$(echo make | $chalk blue)]  $(echo running | $chalk gray) make $@"
 	$hr -w $(tput cols) | $chalk gray
-	make $@
+	make $@ || {
+		exitcode=$?
+		echo "[$(echo error | $chalk red)] $(echo make $@ | $chalk gray) exited with code $(echo $exitcode | chalk red)"
+	}
 }
 
 fswait() {
