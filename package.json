@@ -1,6 +1,6 @@
 {
   "name": "watch-make",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Watch makefile dependencies and run targets",
   "bin": {
     "wmake": "wmake.sh"
