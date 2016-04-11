@@ -3,7 +3,7 @@
 set -e
 shopt -s nocasematch
 
-if [[ $0 == $(npm bin) ]]; then
+if [[ $0 == $(npm bin)* ]]; then
 	readonly NPM_BIN="$(npm root)/watch-make/node_modules/.bin"
 else
 	readonly NPM_BIN="$(npm root -g)/watch-make/node_modules/.bin"
