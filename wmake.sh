@@ -2,7 +2,11 @@
 
 set -e
 
-readonly PROGDIR="$(npm root -g)/watch-make"
+if [[ $0 == $(npm bin) ]]; then
+	readonly PROGDIR="$(npm root)/watch-make"
+else
+	readonly PROGDIR="$(npm root -g)/watch-make"
+fi
 
 fswatch --version | grep Enrico > /dev/null || {
 	cat <<EOF
