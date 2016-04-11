@@ -7,7 +7,7 @@
   },
   "scripts": {
     "bundle": "bundle-dependencies update",
-    "prepublish": "rm -rf node_modules; npm install --production $(node -p 'require(\"./package.json\").bundledDependencies.join(\" \")'); npm dedupe; npm prune",
+    "prepublish": "rm -rf node_modules; npm install --production $(node -p 'require(\"./package.json\").bundledDependencies.join(\" \")')",
     "postpublish": "npm install"
   },
   "repository": {
