@@ -2,7 +2,7 @@
 
 set -e
 
-fswatch --version | grep Enrico || {
+fswatch --version | grep Enrico > /dev/null || {
 	cat <<EOF
 fswatch not found or incompatible version
 
