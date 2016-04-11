@@ -3,9 +3,9 @@
 set -e
 
 if [[ $0 == $(npm bin) ]]; then
-	readonly PROGDIR="$(npm root)/watch-make"
+	readonly NPM_BIN="$(npm root)/watch-make/node_modules/.bin"
 else
-	readonly PROGDIR="$(npm root -g)/watch-make"
+	readonly NPM_BIN="$(npm root -g)/watch-make/node_modules/.bin"
 fi
 
 fswatch --version | grep Enrico > /dev/null || {
@@ -35,11 +35,12 @@ EOF
 }
 
 export FORCE_COLOR=1
-chalk="$PROGDIR/node_modules/.bin/chalk"
+chalk="$NPM_BIN/chalk"
+hr="$NPM_BIN/hr"
 
 _wmake() {
 	echo "[$(echo make | $chalk blue)] $(echo running | $chalk gray) make $@"
-	hr -w $(tput cols) | $chalk gray
+	$hr -w $(tput cols) | $chalk gray
 	make $@
 	deps=$(make -nBd $@ | grep 'No need' | cut -d '`' -f 2 | cut -d "'" -f 1)
 	filecount=$(echo $deps | tr " " "\n" | wc -l)
@@ -47,7 +48,7 @@ _wmake() {
 
 	changed=$(fswatch -1 $deps)
 	echo "[$(echo watch | $chalk green)] $(echo $changed | $chalk gray) changed"
-	hr -w $(tput cols) | $chalk gray
+	$hr -w $(tput cols) | $chalk gray
 	_wmake $@
 }
 
