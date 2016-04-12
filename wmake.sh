@@ -52,7 +52,7 @@ runmake() {
 	$hr -w $(tput cols) | $chalk gray
 	make $@ || {
 		exitcode=$?
-		echo "[$(echo error | $chalk red)] $(echo make $@ | $chalk gray) exited with code $(echo $exitcode | chalk red)"
+		echo "[$(echo error | $chalk red)] $(echo make $@ | $chalk gray) exited with code $(echo $exitcode | $chalk red)"
 	}
 }
 
