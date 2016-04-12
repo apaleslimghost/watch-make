@@ -26,15 +26,15 @@
   },
   "homepage": "https://github.com/quarterto/watch-make#readme",
   "dependencies": {
-    "@quarterto/hr-cli": "^1.0.0",
-    "chalk-cli": "^2.0.0"
+    "chalk-cli": "^2.0.0",
+    "hr-cli": "^1.0.0"
   },
   "devDependencies": {
     "bundle-dependencies": "^1.0.2",
     "in-publish": "^2.0.0"
   },
   "bundledDependencies": [
-    "@quarterto/hr-cli",
-    "chalk-cli"
+    "chalk-cli",
+    "hr-cli"
   ]
 }
