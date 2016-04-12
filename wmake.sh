@@ -59,6 +59,12 @@ runmake() {
 fswait() {
 	echo "[$(echo watch | $chalk green)]" watching $filecount "file"$([ $filecount == '1' ] || echo 's')
 	changed=$(fswatch -1 $deps)
+
+	if [ "$changed" == "" ]; then
+		echo "[$(echo wat | $chalk magenta)]   fswatch exited without outputting a path. I assume this means it was killed. Goodbye lol"
+		exit 129
+	fi
+
 	echo "[$(echo watch | $chalk green)] $(echo $changed | $chalk gray) changed"
 	$hr -w $(tput cols) | $chalk gray
 	if [[ "$changed"  == *makefile ]]; then
