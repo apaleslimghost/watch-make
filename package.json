@@ -7,7 +7,7 @@
   },
   "scripts": {
     "bundle": "bundle-dependencies update",
-    "prepublish": "rm -rf node_modules; npm install --production $(node -p 'require(\"./package.json\").bundledDependencies.join(\" \")')",
+    "prepublish": "in-publish && rm -rf node_modules; npm install --production $(node -p 'require(\"./package.json\").bundledDependencies.join(\" \")') || true",
     "postpublish": "npm install"
   },
   "repository": {
@@ -30,7 +30,8 @@
     "chalk-cli": "^2.0.0"
   },
   "devDependencies": {
-    "bundle-dependencies": "^1.0.2"
+    "bundle-dependencies": "^1.0.2",
+    "in-publish": "^2.0.0"
   },
   "bundledDependencies": [
     "@quarterto/hr-cli",
