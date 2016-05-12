@@ -13,27 +13,26 @@ fswatch --version | grep Enrico > /dev/null || {
 	cat <<EOF
 fswatch not found or incompatible version
 
-fswatch >1.3 <1.9 by Enrico Crisostomo is required.
+fswatch >1.3 by Enrico Crisostomo is required.
 It is available at http://emcrisostomo.github.io/fswatch/
 or in Homebrew: `brew install fswatch`
 EOF
 	exit 1
 }
 
-fswatch --version | grep 1.9 > /dev/null && {
+fswatchversion=$(fswatch --version | head -1 | cut -d ' ' -f 2)
+
+if [ "$fswatchversion" = '1.9.0' ] || [ "$fswatchversion" = '1.9.1' ]; then
 	cat <<EOF
-You are using fswatch version 1.9.x.
+You are using fswatch version $fswatchversion.
 
-fswatch 1.9 has a bug that causes it to hang when called
-with --one-event, which watch-make requires. Until
-https://github.com/emcrisostomo/fswatch/issues/118
-is fixed, downgrade to 1.8.
-
-See http://stackoverflow.com/a/4158763/ for how to install
-old versions of a Homebrew package.
+Early version of fswatch 1.9 have a bug that causes it to
+hang when called with --one-event, which watch-make requires.
+This issue is fixed in 1.9.2. Please upgrade your version of
+fswatch.
 EOF
 	exit 2
-}
+fi
 
 export FORCE_COLOR=1
 chalk="$NPM_BIN/chalk"
