@@ -38,20 +38,41 @@ export FORCE_COLOR=1
 chalk="$NPM_BIN/chalk"
 hr="$NPM_BIN/hr"
 
+makeerror() {
+	local exitcode=$1
+	local makeargs=$2
+	echo "[$(echo error | $chalk red)] $(echo make $makeargs | $chalk gray) exited with code $(echo $exitcode | $chalk red)"
+	if [ "$exitcode" = '2' ]; then
+		echo "[$(echo error | $chalk red)] this is a problem with your makefile. make probably complained above"
+		exit 122
+	fi
+}
+
 loaddeps() {
 	echo "[$(echo make | $chalk blue)]  loading dependencies"
 	olddeps=$deps
-	deps=$(make -nBd $@ | grep 'No need' | cut -d '`' -f 2 | cut -d "'" -f 1)
+	out=$(fifo)
+	make -nBd $@ > $out || {
+		makeerror $? "$@"
+	}
+
+	deps=$(grep 'No need' < $fifo | cut -d '`' -f 2 | cut -d "'" -f 1)
 	filecount=$(echo $deps | tr " " "\n" | wc -l)
-	echo "[$(echo make | $chalk blue)]  loaded" $filecount "dependenc$([ $filecount == '1' ] && 'y' || echo 'ies')"
+	echo "[$(echo make | $chalk blue)]  loaded" $filecount "dependenc$([ $filecount == '1' ] && echo 'y' || echo 'ies')"
+}
+
+fifo() {
+	local tmp="$(mktemp -d /tmp/wmake-XXXXXXX)/pipe"
+	mkfifo $tmp
+	trap "rm -rf $tmp" EXIT
+	echo $tmp
 }
 
 runmake() {
-	echo "[$(echo make | $chalk blue)]  $(echo running | $chalk gray) make $@"
+	echo "[$(echo make | $chalk blue)]  $(echo running | $chalk gray) make $@ $extramakeargs"
 	$hr -w $(tput cols) | $chalk gray
 	make $@ $extramakeargs || {
-		exitcode=$?
-		echo "[$(echo error | $chalk red)] $(echo make $@ | $chalk gray) exited with code $(echo $exitcode | $chalk red)"
+		makeerror $? "$@ $extramakeargs"
 	}
 	extramakeargs=''
 }
