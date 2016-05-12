@@ -50,10 +50,11 @@ loaddeps() {
 runmake() {
 	echo "[$(echo make | $chalk blue)]  $(echo running | $chalk gray) make $@"
 	$hr -w $(tput cols) | $chalk gray
-	make $@ || {
+	make $@ $extramakeargs || {
 		exitcode=$?
 		echo "[$(echo error | $chalk red)] $(echo make $@ | $chalk gray) exited with code $(echo $exitcode | $chalk red)"
 	}
+	extramakeargs=''
 }
 
 fswait() {
@@ -74,6 +75,7 @@ fswait() {
 			return 0
 		else
 			noloaddeps='1'
+			extramakeargs='-B'
 			echo "[$(echo watch | $chalk green)] no change to dependencies, remaking"
 			return 1 # signals to the loop to remake
 		fi
