@@ -52,11 +52,11 @@ loaddeps() {
 	echo "[$(echo make | $chalk blue)]  loading dependencies"
 	olddeps=$deps
 	out=$(fifo)
-	make -nBd $@ > $out || {
+	make -nBd $@ > "$out" || {
 		makeerror $? "$@"
 	}
 
-	deps=$(grep 'No need' < $fifo | cut -d '`' -f 2 | cut -d "'" -f 1)
+	deps=$(grep 'No need' < "$out" | cut -d '`' -f 2 | cut -d "'" -f 1)
 	filecount=$(echo $deps | tr " " "\n" | wc -l)
 	echo "[$(echo make | $chalk blue)]  loaded" $filecount "dependenc$([ $filecount == '1' ] && echo 'y' || echo 'ies')"
 }
