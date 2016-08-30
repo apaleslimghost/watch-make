@@ -9,15 +9,13 @@ const pluralize = require('pluralize');
 const path = require('path');
 const fs = require('mz/fs');
 const debounce = require('lodash.debounce');
+const highland = require('highland');
 
 const log = require('./logger');
 const parseMakeOutput = require('./parse-make-output');
 
 function make(args) {
-	const child = spawn('make', formatArgs(args, {equals: true}));
-	child.stdout = child.stdout.pipe(split());
-	child.stderr = child.stderr.pipe(split());
-	return child;
+	return spawn('make', formatArgs(args, {equals: true}));
 }
 
 const getAllWatched = watched => Object.keys(watched).reduce(
@@ -44,7 +42,7 @@ function runMake(args, watcher) {
 	const foundPrereqs = new Set();
 	const foundTargets = new Set();
 
-	child.stdout.on('data', function(line) {
+	highland(child.stdout).split().each(line => {
 		const {type, data} = parseMakeOutput(line);
 		switch(type) {
 			case 'line':
@@ -65,7 +63,7 @@ function runMake(args, watcher) {
 		}
 	});
 
-	child.stderr.on('data', line => {
+	highland(child.stderr).split().each(line => {
 		if(line.trim()) log.error(line.trim());
 	});
 
