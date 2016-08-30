@@ -88,7 +88,7 @@ function runMake(args, watcher) {
 	});
 }
 
-function main(targets = []) {
+module.exports = function(targets = []) {
 	console.log();
 	const watcher = chokidar.watch(['makefile']);
 	watcher.on('change', file => {
@@ -98,5 +98,3 @@ function main(targets = []) {
 
 	runMake(targets, watcher);
 }
-
-main();
