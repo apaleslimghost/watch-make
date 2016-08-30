@@ -6,6 +6,7 @@ const ignoreRegex = [
 	/^PARTICULAR PURPOSE/,
 	/^This program built for/,
 	/^Reading makefile/,
+	/Pruning file/,
 	/Updating goal targets/,
 	/Considering target/,
 	/Must remake target/,

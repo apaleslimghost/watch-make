@@ -1,3 +1,7 @@
 #!/usr/bin/env node
+const minimist = require('minimist');
+const watchMake = require('./');
 
-require('./')(process.argv.slice(2));
+const argv = minimist(process.argv.slice(2));
+
+watchMake(argv._, argv);
