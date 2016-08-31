@@ -21,6 +21,8 @@ function make(args) {
 const getAllWatched = watched => Object.keys(watched).reduce(
 	(files, dir) => files.concat(watched[dir].map(file => path.join(dir, file))),
 	[]
+).map(
+	file => path.relative(process.cwd(), file)
 );
 
 let currentlyRunning = false;
@@ -76,9 +78,7 @@ function runMake(args, watcher) {
 	});
 
 	child.on('close', (code, signal) => {
-		const watched = getAllWatched(watcher.getWatched()).map(
-			file => path.relative(process.cwd(), file)
-		);
+		const watched = getAllWatched(watcher.getWatched());
 
 		watched.forEach(target => foundPrereqs.delete(target));
 		foundTargets.forEach(target => foundPrereqs.delete(target));
