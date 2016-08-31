@@ -32,6 +32,11 @@ module.exports = symbolLogger({
 		format: 'cyan',
 	},
 
+	question: {
+		symbol: '?',
+		format: chalk.magenta.bold,
+	},
+
 	changed: {
 		symbol: '✏︎',
 		format: 'magenta',

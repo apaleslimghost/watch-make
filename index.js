@@ -148,7 +148,8 @@ module.exports = function(targets = [], options) {
 	});
 
 	const commands = {
-		help() {
+		help(command) {
+			if(command) log.question(`i don't know ${chalk.grey.italic(command)}`);
 			log.info('commands you can enter');
 			log.message(Object.keys(commands));
 			rl.prompt();
@@ -179,7 +180,7 @@ module.exports = function(targets = [], options) {
 	rl.on('line', line => {
 		emptyLine();
 		const command = line.trim();
-		commands[command] ? commands[command]() : commands.help();
+		commands[command] ? commands[command]() : commands.help(command);
 	});
 
 	watcher.on('change', file => {
