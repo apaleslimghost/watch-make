@@ -143,12 +143,12 @@ module.exports = function(targets = [], options) {
 	const rl = readline.createInterface({
 		input: process.stdin,
 		output: process.stdout,
-		prompt: '  ❯ ',
+		prompt: chalk.cyan('  ❯ '),
 	});
 
 	const commands = {
 		help() {
-			log.info('Commands you can enter');
+			log.info('commands you can enter');
 			log.message(Object.keys(commands));
 			rl.prompt();
 		},
@@ -158,8 +158,9 @@ module.exports = function(targets = [], options) {
 		},
 
 		files() {
-			log.info('Currently watched files');
-			log.message(getAllWatched(watcher.getWatched()));
+			const watched = getAllWatched(watcher.getWatched());
+			log.info(`watching ${watched.length} files`);
+			log.message(watched);
 			rl.prompt();
 		}
 	}
