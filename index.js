@@ -99,7 +99,6 @@ function runMake(args, watcher) {
 					log.failure(error || `make exited with code ${code}`);
 				}
 
-				emptyLine();
 				currentlyRunning = false;
 
 				if(fatal) {
