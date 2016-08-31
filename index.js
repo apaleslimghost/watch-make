@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('mz/fs');
 const debounce = require('lodash.debounce');
 const highland = require('highland');
+const readline = require('readline');
 
 const log = require('./logger');
 const parseMakeOutput = require('./parse-make-output');
@@ -140,6 +141,37 @@ module.exports = function(targets = [], options) {
 
 	const watcher = chokidar.watch(['makefile']);
 	const debouncedMake = debounce(() => runMake(targets, watcher), 50);
+
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout,
+		prompt: '  ❯ ',
+	});
+
+	const commands = {
+		help() {
+			log.info('Commands you can enter');
+			log.message(Object.keys(commands));
+			rl.prompt();
+		},
+
+		rebuild() {
+			debouncedMake();
+		},
+
+		files() {
+			log.info('Currently watched files');
+			log.message(getAllWatched(watcher.getWatched()));
+			rl.prompt();
+		}
+	}
+
+	rl.on('line', line => {
+		emptyLine();
+		const command = line.trim();
+		commands[command] ? commands[command]() : commands.help();
+	});
+
 	watcher.on('change', file => {
 		log.changed(`changed ${chalk.grey.italic(file)}`);
 		debouncedMake();
