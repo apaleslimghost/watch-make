@@ -3,11 +3,9 @@
   "version": "1.6.1",
   "description": "Watch makefile dependencies and run targets",
   "bin": {
-    "wmake": "wmake.sh"
+    "wmake": "bin.js"
   },
   "scripts": {
-    "bundle": "bundle-dependencies update",
-    "prepublish": "in-publish && rm -rf node_modules; npm install --production $(node -p 'require(\"./package.json\").bundledDependencies.join(\" \")') || true",
     "postpublish": "npm install"
   },
   "repository": {
@@ -26,15 +24,18 @@
   },
   "homepage": "https://github.com/quarterto/watch-make#readme",
   "dependencies": {
-    "chalk-cli": "^2.0.0",
-    "hr-cli": "^1.0.0"
-  },
-  "devDependencies": {
-    "bundle-dependencies": "^1.0.2",
-    "in-publish": "^2.0.0"
-  },
-  "bundledDependencies": [
-    "chalk-cli",
-    "hr-cli"
-  ]
+    "@quarterto/format-cli-args": "^1.2.0",
+    "@quarterto/nthback": "^1.1.0",
+    "@quarterto/print-empty-line": "^1.0.0",
+    "@quarterto/spawn-args": "^1.0.0",
+    "@quarterto/symbol-logger": "^1.6.0",
+    "chalk": "^1.1.3",
+    "chokidar": "^1.6.0",
+    "cross-spawn": "^4.0.0",
+    "highland": "^2.7.1",
+    "lodash.debounce": "^4.0.6",
+    "minimist": "^1.2.0",
+    "mz": "^2.4.0",
+    "pluralize": "^3.0.0"
+  }
 }
