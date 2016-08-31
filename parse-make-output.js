@@ -20,13 +20,15 @@ const ignoreRegex = [
 module.exports = line => {
 	const [isFile, file] = line.match(/^\s*No need to remake target `(.+)'/) || [];
 	const [isTaskError, errorCode] = line.match(/^make: \*\*\* \[.+\] Error (\d+)/) || [];
-	const [isSyntaxError, lineNo, errorMsg] = line.match(/^makefile:(\d+): (.+)\. Stop\./) || [];
+	const [isMakeError, makeErrorMessage] = line.match(/^make: \*\*\* (.+) Stop\./) || [];
+	const [isSyntaxError, lineNo, syntaxErrorMsg] = line.match(/^makefile:(\d+): (.+)\. Stop\./) || [];
 	const [isDependency, toFile, fromFile] = line.match(/Prerequisite `(.+)' is (?:old|new)er than target `(.+)'/) || [];
 	const ignore = ignoreRegex.some(regex => regex.test(line));
 
 	return isFile        ? {type: 'file', data: file}
 	     : isTaskError   ? {type: 'taskError', data: errorCode}
-			 : isSyntaxError ? {type: 'syntaxError', data: {lineNo, errorMsg}}
+			 : isMakeError   ? {type: 'makeError', data: makeErrorMessage}
+			 : isSyntaxError ? {type: 'syntaxError', data: {lineNo, syntaxErrorMsg}}
 	     : isDependency  ? {type: 'dependency', data: {fromFile, toFile}}
 	     : !ignore       ? {type: 'line', data: line}
 	     : {};

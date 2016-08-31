@@ -39,6 +39,7 @@ function runMake(args, watcher) {
 	});
 
 	let error;
+	let fatal = false;
 	const foundPrereqs = new Set();
 	const foundTargets = new Set();
 
@@ -51,12 +52,6 @@ function runMake(args, watcher) {
 			case 'file':
 				foundPrereqs.add(data);
 				break;
-			case 'taskError':
-				error = `make task exited with error ${data}`;
-				break;
-			case 'syntaxError':
-				error = `make syntax error: ${data.errorMsg} on line ${data.lineNo}`;
-				break;
 			case 'dependency':
 				foundTargets.add(data.fromFile);
 				break;
@@ -64,7 +59,23 @@ function runMake(args, watcher) {
 	});
 
 	highland(child.stderr).split().each(line => {
-		if(line.trim()) log.error(line.trim());
+		const {type, data} = parseMakeOutput(line);
+		switch(type) {
+			case 'line':
+				log.error(data);
+				break;
+			case 'taskError':
+				error = `make task exited with error ${data}`;
+				break;
+			case 'makeError':
+				error = data;
+				fatal = true;
+				break;
+			case 'syntaxError':
+				error = `make syntax error: ${data.errorMsg} on line ${data.lineNo}`;
+				fatal = true;
+				break;
+		}
 	});
 
 	child.on('exit', code => {
@@ -90,6 +101,10 @@ function runMake(args, watcher) {
 
 				emptyLine();
 				currentlyRunning = false;
+
+				if(fatal) {
+					return process.exit(1);
+				}
 			}
 
 
