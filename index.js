@@ -1,4 +1,4 @@
-const {spawn} = require('child_process');
+const spawn = require('cross-spawn');
 const formatArgs = require('@quarterto/format-cli-args');
 const emptyLine = require('@quarterto/print-empty-line');
 const nthback = require('@quarterto/nthback');
@@ -76,7 +76,7 @@ function runMake(args, watcher) {
 		}
 	});
 
-	child.on('exit', code => {
+	child.on('close', (code, signal) => {
 		const watched = getAllWatched(watcher.getWatched()).map(
 			file => path.relative(process.cwd(), file)
 		);
@@ -90,7 +90,10 @@ function runMake(args, watcher) {
 			const nonDirs = files.filter(({dir}) => !dir).map(({file}) => file);
 
 			function finalLine() {
-				if(code === 0) {
+				if(signal) {
+					log.failure(`make died with signal ${signal}`);
+					fatal = true;
+				} else if(code === 0) {
 					const noFiles = getAllWatched(watcher.getWatched()).length;
 					log.success(`watching ${noFiles} ${pluralize('file', noFiles)}`);
 				} else {
@@ -104,7 +107,6 @@ function runMake(args, watcher) {
 					return process.exit(1);
 				}
 			}
-
 
 			if(nonDirs.length) {
 				let calls = 0;
