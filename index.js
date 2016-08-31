@@ -32,8 +32,6 @@ function runMake(args, watcher) {
 	log.running(`running ${chalk.grey.italic(`make ${args.join(' ')}`.trim())}`);
 
 	const child = make({
-		'no-builtin-rules': true,
-		'no-builtin-variables': true,
 		debug: 'v',
 		_: args
 	});
