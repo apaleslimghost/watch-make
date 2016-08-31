@@ -4,7 +4,6 @@ const emptyLine = require('@quarterto/print-empty-line');
 const nthback = require('@quarterto/nthback');
 const chokidar = require('chokidar');
 const chalk = require('chalk');
-const split = require('split');
 const pluralize = require('pluralize');
 const path = require('path');
 const fs = require('mz/fs');
