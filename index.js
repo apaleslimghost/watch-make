@@ -162,8 +162,18 @@ module.exports = function(targets = [], options) {
 			log.info(`watching ${watched.length} files`);
 			log.message(watched);
 			rl.prompt();
+		},
+
+		exit() {
+			process.stdout.write('\r');
+			log.goodbye('goodbye');
+			process.exit(0);
 		}
 	}
+
+	rl.on('SIGINT', () => {
+		commands.exit();
+	});
 
 	rl.on('line', line => {
 		emptyLine();
