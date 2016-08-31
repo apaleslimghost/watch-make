@@ -70,8 +70,7 @@ function runMake(args, watcher) {
 				fatal = true;
 				break;
 			case 'syntaxError':
-				error = `make syntax error: ${data.errorMsg} on line ${data.lineNo}`;
-				fatal = true;
+				error = `make syntax error: ${data.syntaxErrorMsg} on line ${data.lineNo}`;
 				break;
 		}
 	});
@@ -173,6 +172,7 @@ module.exports = function(targets = [], options) {
 	});
 
 	watcher.on('change', file => {
+		emptyLine();
 		log.changed(`changed ${chalk.grey.italic(file)}`);
 		debouncedMake();
 	});
