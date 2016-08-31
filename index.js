@@ -100,6 +100,7 @@ function runMake(args, watcher) {
 				}
 
 				currentlyRunning = false;
+				emptyLine();
 
 				if(fatal) {
 					return process.exit(1);
@@ -182,7 +183,6 @@ module.exports = function(targets = [], options) {
 	});
 
 	watcher.on('change', file => {
-		emptyLine();
 		log.changed(`changed ${chalk.grey.italic(file)}`);
 		debouncedMake();
 	});
