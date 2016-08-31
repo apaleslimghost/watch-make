@@ -184,6 +184,7 @@ module.exports = function(targets = [], options) {
 	});
 
 	watcher.on('change', file => {
+		process.stdout.write('\r');
 		log.changed(`changed ${chalk.grey.italic(file)}`);
 		debouncedMake();
 	});
