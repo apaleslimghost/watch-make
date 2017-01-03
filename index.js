@@ -14,8 +14,12 @@ const readline = require('readline');
 const log = require('./logger');
 const parseMakeOutput = require('./parse-make-output');
 
+const makeEnv = {
+	FORCE_COLOR: '1'
+};
+
 function make(args) {
-	return spawn('make', formatArgs(args, {equals: true}));
+	return spawn('make', formatArgs(args, {equals: true}), {env: makeEnv});
 }
 
 const getAllWatched = watched => Object.keys(watched).reduce(
