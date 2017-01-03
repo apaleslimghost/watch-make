@@ -10,6 +10,7 @@ const fs = require('mz/fs');
 const debounce = require('lodash.debounce');
 const highland = require('highland');
 const readline = require('readline');
+const wordwrap = require('wordwrap');
 
 const log = require('./logger');
 const parseMakeOutput = require('./parse-make-output');
@@ -30,6 +31,18 @@ const getAllWatched = watched => Object.keys(watched).reduce(
 );
 
 let currentlyRunning = false;
+let wrap;
+
+const rewrap = () => {
+ wrap = wordwrap(process.stdout.columns - 4);
+};
+
+process.stdout.on('resize', rewrap);
+rewrap();
+
+const logWrapped = (level, data) => {
+	wrap(data).split('\n').forEach(log[level]);
+}
 
 function runMake(args, watcher) {
 	if(currentlyRunning) return;
@@ -51,7 +64,7 @@ function runMake(args, watcher) {
 		const {type, data} = parseMakeOutput(line);
 		switch(type) {
 			case 'line':
-				log.message(data);
+				logWrapped('message', data);
 				break;
 			case 'file':
 				foundPrereqs.add(data);
@@ -66,7 +79,7 @@ function runMake(args, watcher) {
 		const {type, data} = parseMakeOutput(line);
 		switch(type) {
 			case 'line':
-				log.error(data);
+				logWrapped('error', data);
 				break;
 			case 'taskError':
 				error = `make task exited with error ${data}`;
