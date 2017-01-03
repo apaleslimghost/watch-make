@@ -14,9 +14,9 @@ const readline = require('readline');
 const log = require('./logger');
 const parseMakeOutput = require('./parse-make-output');
 
-const makeEnv = {
+const makeEnv = Object.assign({
 	FORCE_COLOR: '1'
-};
+}, process.env);
 
 function make(args) {
 	return spawn('make', formatArgs(args, {equals: true}), {env: makeEnv});
