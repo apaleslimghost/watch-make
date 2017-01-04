@@ -41,7 +41,7 @@ process.stdout.on('resize', rewrap);
 rewrap();
 
 const logWrapped = (level, data) => {
-	wrap(data).split('\n').forEach(log[level]);
+	log[level](wrap(data));
 };
 
 const printWatched = (watched) => {
