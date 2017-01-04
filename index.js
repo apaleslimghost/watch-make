@@ -70,6 +70,7 @@ function runMake(args, watcher) {
 		const {type, data} = parseMakeOutput(line);
 		switch(type) {
 			case 'line':
+			case 'empty':
 				logWrapped('message', data);
 				break;
 			case 'file':

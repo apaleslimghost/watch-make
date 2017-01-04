@@ -14,7 +14,6 @@ const ignoreRegex = [
 	/Finished prerequisites of target/,
 	/always-make flag/,
 	/does not exist/,
-	/^$/,
 ];
 
 module.exports = line => {
@@ -23,6 +22,7 @@ module.exports = line => {
 	const [isMakeError, makeErrorMessage] = line.match(/^make:(?: \*\*\*)? (.+)(?:\. *Stop\.)?/) || [];
 	const [isSyntaxError, lineNo, syntaxErrorMsg] = line.match(/^makefile:(\d+):(?: \*\*\*)? (.+)\. *Stop\./) || [];
 	const [isDependency, toFile, fromFile] = line.match(/Prerequisite `(.+)' (?:is (?:old|new)er than|of) target `(.+)'/) || [];
+	const isEmpty = line.trim() === '';
 	const ignore = ignoreRegex.some(regex => regex.test(line));
 
 	return isFile        ? {type: 'file', data: file}
@@ -30,6 +30,7 @@ module.exports = line => {
 			 : isMakeError   ? {type: 'makeError', data: makeErrorMessage}
 			 : isSyntaxError ? {type: 'syntaxError', data: {lineNo, syntaxErrorMsg}}
 	     : isDependency  ? {type: 'dependency', data: {fromFile, toFile}}
+	     : isEmpty       ? {type: 'empty', data: line}
 	     : !ignore       ? {type: 'line', data: line}
 	     : {};
 };
