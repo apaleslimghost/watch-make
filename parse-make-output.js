@@ -30,7 +30,7 @@ module.exports = line => {
 			 : isMakeError   ? {type: 'makeError', data: makeErrorMessage}
 			 : isSyntaxError ? {type: 'syntaxError', data: {lineNo, syntaxErrorMsg}}
 	     : isDependency  ? {type: 'dependency', data: {fromFile, toFile}}
-	     : isEmpty       ? {type: 'empty', data: line}
+	     : isEmpty       ? {type: 'empty', data: ''}
 	     : !ignore       ? {type: 'line', data: line}
 	     : {};
 };
