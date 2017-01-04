@@ -42,13 +42,19 @@ rewrap();
 
 const logWrapped = (level, data) => {
 	wrap(data).split('\n').forEach(log[level]);
-}
+};
+
+const printWatched = (watched) => {
+	const files = watched.length;
+	log.watching(`watching ${files} ${pluralize('file', files)}`);
+};
 
 function runMake(args, watcher) {
 	if(currentlyRunning) return;
 	currentlyRunning = true;
 
-	log.running(`running ${chalk.grey.italic(`make ${args.join(' ')}`.trim())}`);
+	const makeCommand = chalk.grey.italic(`make ${formatArgs({_: args})}`.trim());
+	log.running(`running ${makeCommand}`);
 
 	const child = make({
 		debug: 'v',
@@ -82,7 +88,7 @@ function runMake(args, watcher) {
 				logWrapped('error', data);
 				break;
 			case 'taskError':
-				error = `make task exited with error ${data}`;
+				error = `${makeCommand} exited with error ${data}`;
 				break;
 			case 'makeError':
 				error = data;
@@ -109,11 +115,14 @@ function runMake(args, watcher) {
 				if(signal) {
 					log.failure(`make died with signal ${signal}`);
 					fatal = true;
-				} else if(code === 0) {
-					const noFiles = getAllWatched(watcher.getWatched()).length;
-					log.success(`watching ${noFiles} ${pluralize('file', noFiles)}`);
 				} else {
-					log.failure(error || `make exited with code ${code}`);
+					if(code === 0) {
+						log.success(`${makeCommand}`);
+					} else {
+						log.failure(error || `${makeCommand} exited with code ${code}`);
+					}
+
+					printWatched(getAllWatched(watcher.getWatched()));
 				}
 
 				currentlyRunning = false;
@@ -178,7 +187,7 @@ module.exports = function(targets = [], options) {
 
 		files() {
 			const watched = getAllWatched(watcher.getWatched());
-			log.info(`watching ${watched.length} files`);
+			printWatched(watched);
 			log.message(watched);
 			rl.prompt();
 		},

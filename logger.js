@@ -7,6 +7,11 @@ module.exports = symbolLogger({
 		format: 'blue',
 	},
 
+	watching: {
+		symbol: '⚲',
+		format: 'blue',
+	},
+
 	success: {
 		symbol: '✔︎',
 		format: 'green',
