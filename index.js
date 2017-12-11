@@ -162,12 +162,7 @@ function runMake(args, watcher) {
 	});
 }
 
-module.exports = function(targets = [], options) {
-	emptyLine();
-
-	const watcher = chokidar.watch(['makefile']);
-	const debouncedMake = debounce(() => runMake(targets, watcher), 50);
-
+const startInterface = () => {
 	const rl = readline.createInterface({
 		input: process.stdin,
 		output: process.stdout,
@@ -209,6 +204,13 @@ module.exports = function(targets = [], options) {
 		const command = line.trim();
 		commands[command] ? commands[command]() : commands.help(command);
 	});
+};
+
+module.exports = function(targets = [], options) {
+	emptyLine();
+
+	const watcher = chokidar.watch(['makefile']);
+	const debouncedMake = debounce(() => runMake(targets, watcher), 50);
 
 	watcher.on('change', file => {
 		process.stdout.write('\r');
@@ -217,4 +219,8 @@ module.exports = function(targets = [], options) {
 	});
 
 	debouncedMake();
+
+	if(process.stdout.isTTY && !options['non-interactive']) {
+		startInterface();
+	}
 };
