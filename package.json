@@ -1,6 +1,6 @@
 {
   "name": "watch-make",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Watch makefile dependencies and run targets",
   "bin": {
     "wmake": "bin.js"
